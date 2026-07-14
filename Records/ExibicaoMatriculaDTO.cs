@@ -1,0 +1,1 @@
+public record exibicaoMatriculaDTO(int id, string nome, TiposDePlano plano, DateOnly dataInicio, DateOnly dataFim);

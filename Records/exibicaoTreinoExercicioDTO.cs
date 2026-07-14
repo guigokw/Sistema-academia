@@ -1,0 +1,1 @@
+public record exibicaoTreinoExercicio(int idExercicio, string nomeExercicio, int series, int repeticoes, int descanso);

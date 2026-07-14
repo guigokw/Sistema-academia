@@ -1,0 +1,1 @@
+public record exibicaoPagamentosDTO(string nomeAluno, string nomePlano, DateOnly dataVencimento, SituacaoPagamento SituacaoPagamento);

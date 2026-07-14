@@ -1,0 +1,1 @@
+public record ExibicaoAlunosDTO(string nome, string cpf, string telefone, string email, string nascimento);

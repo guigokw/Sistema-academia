@@ -1,0 +1,1 @@
+public record ExibicaoPlanosDTO(int IdPlano, string NomePlano, TiposDePlano tipoPlano, decimal ValorPlano);

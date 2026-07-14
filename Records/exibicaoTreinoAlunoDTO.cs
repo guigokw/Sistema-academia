@@ -1,0 +1,1 @@
+public record exibicaoTreinoAlunoDTO(int id, string nome, string objetivo, string duracao);
