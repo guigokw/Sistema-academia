@@ -33,7 +33,7 @@ public class AppDataContext : DbContext
         
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(pastaRaiz)
-            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.Development.json", optional: false)
             .Build();
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
