@@ -74,7 +74,7 @@ namespace Sistema_academia
                 switch (opcao)
                 {
                     case 1:
-                        await menuCliente(_alunoService, _treinoAlunoService);
+                        await menuCliente(_alunoService, _treinoAlunoService, _matriculaService);
                         break;
                     case 2:
                         await menuPlano(_planoService);
@@ -116,7 +116,7 @@ namespace Sistema_academia
             }
         }
 
-        private static async Task menuCliente(IAlunoService alunoService, ITreinoAlunoService treinoAlunoService) {
+        private static async Task menuCliente(IAlunoService alunoService, ITreinoAlunoService treinoAlunoService, IMatriculaService matriculaService) {
             try {  
               while (true) {  
                 Console.WriteLine("--- MENU DO CLIENTE ---");
@@ -174,7 +174,7 @@ namespace Sistema_academia
                            menuAtualizarCliente(alunoService);
                            break;
                       case 4:
-                           await menuConsultaCliente(alunoService, treinoAlunoService);
+                           await menuConsultaCliente(alunoService, treinoAlunoService, matriculaService);
                            break;
                       case 5:
                           return;
@@ -220,6 +220,9 @@ namespace Sistema_academia
             } catch (System.OverflowException)
             {
                 Console.WriteLine("o formato inserido é inválido por se tratar de ser muito longo ou muito pequeno para esse valor");
+            } catch (MatriculaNaoEncontradaException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
         
@@ -290,14 +293,15 @@ namespace Sistema_academia
             }
         }
 
-        private static async Task menuConsultaCliente(IAlunoService alunoService, ITreinoAlunoService treinoAlunoService)
+        private static async Task menuConsultaCliente(IAlunoService alunoService, ITreinoAlunoService treinoAlunoService, IMatriculaService matriculaService)
         {
             while (true) {
               Console.WriteLine("1 - Buscar aluno");  
               Console.WriteLine("2 - lisar alunos ativos");
               Console.WriteLine("3 - listar alunos inativos");
               Console.WriteLine("4 - listar os treinos de um aluno");
-              Console.WriteLine("5 - sair do menu de consultas do cliente");
+              Console.WriteLine("5 - Listar Alunos com matriculas proximas do vencimento");
+              Console.WriteLine("6 - sair do menu de consultas do cliente");
               Console.WriteLine("---------------------------");
 
               Console.WriteLine("escolha uma dessas opções para prosseguir");
@@ -359,6 +363,21 @@ namespace Sistema_academia
                       }      
                       break;
                   case 5:
+                       var alunosProximosVencimento = await matriculaService.ObterMatriculasProximasDoVencimento();
+
+                       Console.WriteLine("--- LISTA DE ALUNOS COM MATRICULA VENCENDO ESSA SEMANA ---");
+
+                       foreach (var alunos in alunosProximosVencimento)
+                        {
+                            Console.WriteLine("ID DA MATRICULA: " +alunos.id);
+                            Console.WriteLine("NOME DO ALUNO: " +alunos.nome);
+                            Console.WriteLine("TIPO DE PLANO: " +alunos.plano);
+                            Console.WriteLine("DATA DE INICIO: " +alunos.dataInicio);
+                            Console.WriteLine("DATA DE VENCIMENTO: " +alunos.dataFim);
+                            Console.WriteLine("--------------");
+                        }   
+                        break;
+                  case 6:
                      return;
                   default:
                      Console.WriteLine("Opção inválida, por favor digite novamente");
@@ -1094,7 +1113,9 @@ namespace Sistema_academia
                     Console.WriteLine("2 - Cancelar pagamento");
                     Console.WriteLine("3 - Listar pagamentos atrasados");
                     Console.WriteLine("4 - Listar pagamentos realizados");
-                    Console.WriteLine("5 - Sair do menu de pagamentos");
+                    Console.WriteLine("5 - Listar pagamentos pendentes");
+                    Console.WriteLine("6 - Calcular o faturamento mensal do mês atual");
+                    Console.WriteLine("7 - Sair do menu de pagamentos");
                     Console.WriteLine("--------------------");
 
                     Console.WriteLine("Qual dessas operações você deseja realizar?");
@@ -1155,6 +1176,22 @@ namespace Sistema_academia
                            }
                             break; 
                         case 5:
+                              var matriculasPendentes = await matriculaService.listarMatriculasPendentes();
+
+                              Console.WriteLine("--- LISTA DE PAGAMENTOS PENDENTES ---");
+                              foreach (var pendente in matriculasPendentes)
+                            {
+                            Console.WriteLine($"[NOME DO ALUNO: {pendente.nomeAluno}]");
+                            Console.WriteLine($"[NOME DO PLANO: {pendente.nomePlano}]");
+                            Console.WriteLine($"[DATA DE VENCIMENTO: {pendente.dataVencimento}]");
+                            Console.WriteLine($"[SITUAÇÃO DO PAGAMENTO: {pendente.SituacaoPagamento}]");
+                            Console.WriteLine("----------------");
+                            }    
+                            break;
+                        case 6:
+                            await pagamentoService.exibirFaturamentoMensal();
+                            break;    
+                        case 7:
                             return;
                         default:
                             Console.WriteLine("opção inválida, por favor digite novamente");

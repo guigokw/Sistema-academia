@@ -23,6 +23,8 @@ public interface IMatriculaRepository
 
     Task<List<Matricula>> obterMatriculasPendentes();
 
+    Task<List<Matricula>> ObterMatriculasProximasDoVencimento();
+
     void atualizarSituacaoTodos();
 
 }
@@ -139,5 +141,17 @@ public void atualizarSituacaoTodos()
         _context.SaveChanges();
     }
 
+public async Task<List<Matricula>> ObterMatriculasProximasDoVencimento()
+{
+    DateOnly hoje = DateOnly.FromDateTime(DateTime.Now);
+    DateOnly limite = hoje.AddDays(7);
+
+    return await _context.Matriculas
+        .Include(m => m.Aluno)
+        .Where(m => m.DataVencimento >= hoje &&
+                    m.DataVencimento <= limite)
+        .OrderBy(m => m.DataVencimento)
+        .ToListAsync();
+}
 
 }

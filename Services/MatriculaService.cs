@@ -15,6 +15,10 @@ public interface IMatriculaService
     Task<IEnumerable<exibicaoPagamentosDTO>> listarMatriculasVencidas();
 
     Task<IEnumerable<exibicaoPagamentosDTO>> listarMatriculasAtivas();
+
+    Task<IEnumerable<exibicaoPagamentosDTO>> listarMatriculasPendentes();
+
+    Task<List<exibicaoMatriculaDTO>> ObterMatriculasProximasDoVencimento();
 }
 
 public class MatriculaService : IMatriculaService
@@ -228,4 +232,25 @@ public class MatriculaService : IMatriculaService
 
         return exibirDados;
     }
+
+    public async Task<List<exibicaoMatriculaDTO>> ObterMatriculasProximasDoVencimento()
+{
+    var matriculas = await _matriculaRepository.ObterMatriculasProximasDoVencimento();
+
+    if (!matriculas.Any() || matriculas == null)
+    {
+        throw new MatriculaNaoEncontradaException("Nenhuma matrícula com vencimento para essa semana foi encontrada");
+    }
+
+    var exibirDados = matriculas.Select(a => new exibicaoMatriculaDTO(
+        a.idMatricula,
+        a.Aluno.NomeAluno,
+        a.Plano.TipoPlano,
+        a.DataInicio,
+        a.DataVencimento
+    )).ToList();
+
+    return exibirDados;
+    
+}
 }

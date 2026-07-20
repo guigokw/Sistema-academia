@@ -8,6 +8,8 @@ public interface IPagamentoService
 
     void cancelarPagamento(int idPagamento);
 
+    Task exibirFaturamentoMensal();
+
 
 } 
 
@@ -94,6 +96,19 @@ public class PagamentoService : IPagamentoService
         _ => throw new ArgumentException("Plano inválido")
     };
 }
+
+public async Task exibirFaturamentoMensal()
+    {
+        decimal faturamentoMensal = await _pagamentoRepository.calcularFaturamentoMensal();
+
+        if (faturamentoMensal <= 0)
+        {
+            Console.WriteLine("Nesse mês não houve faturamento");
+        } else
+        {
+            Console.WriteLine("O faturamento mensal deste mês equivale a R$:" +faturamentoMensal);
+        }
+    }
 
 
 }
