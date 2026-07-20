@@ -11,6 +11,8 @@ public interface IPlanoRepository
     void atualizarPreco(Plano plano, decimal novoPreco);
 
     Task<List<Plano>> listarPlanos();
+
+    Task<TiposDePlano> planoMaisContratado();
 }
 
 public class PlanoRepository : IPlanoRepository
@@ -47,5 +49,18 @@ public class PlanoRepository : IPlanoRepository
     public async Task<List<Plano>> listarPlanos()
     {
         return await _context.Planos.ToListAsync();
+    }
+
+    public async Task<TiposDePlano> planoMaisContratado()
+    {
+        var resultado = await _context.Matriculas
+            .Include(p => p.Plano)
+            .GroupBy(m => m.Plano.TipoPlano)
+            .Select(g => new { Tipo = g.Key, Quantidade = g.Count() })
+            .OrderByDescending(x => x.Quantidade)
+            .Select(x => x.Tipo)
+            .FirstOrDefaultAsync();
+
+        return resultado;
     }
 }

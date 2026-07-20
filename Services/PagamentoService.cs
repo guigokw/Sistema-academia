@@ -108,6 +108,7 @@ public async Task exibirFaturamentoMensal()
         {
             Console.WriteLine("O faturamento mensal deste mês equivale a R$:" +faturamentoMensal);
         }
+
     }
 
 

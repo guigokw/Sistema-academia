@@ -396,7 +396,8 @@ namespace Sistema_academia
                 Console.WriteLine("2 - Editar preço do plano");
                 Console.WriteLine("3 - Excluir plano");
                 Console.WriteLine("4 - Consultar plano");
-                Console.WriteLine("5 - Sair do menu de planos");
+                Console.WriteLine("5 - Listar plano mais contratado");
+                Console.WriteLine("6 - Sair do menu de planos");
                 Console.WriteLine("---------------------------");
 
                 Console.WriteLine("escolha uma dessas opções para prosseguir");
@@ -490,6 +491,9 @@ namespace Sistema_academia
                         }
                         break;
                     case 5:
+                         Console.WriteLine("O plano mais contratado da Academia é o plano " + await planoService.listarPlanoMaisContratado());   
+                         break;
+                    case 6:
                         return;
                     default:
                         Console.WriteLine("Opção inválida, por favor digite novamente");

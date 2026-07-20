@@ -9,6 +9,8 @@ public interface IPlanoService
     void atualizarPreco(int id, decimal novoPreco);
 
     Task<List<ExibicaoPlanosDTO>> listarPlanos();
+
+    Task<TiposDePlano> listarPlanoMaisContratado();
 }
 
 public class PlanoService : IPlanoService
@@ -78,5 +80,10 @@ public class PlanoService : IPlanoService
         .ToList();
 
         return exibirDados;
+    }
+
+    public async Task<TiposDePlano> listarPlanoMaisContratado()
+    {
+         return await _planoRepository.planoMaisContratado();
     }
 }
