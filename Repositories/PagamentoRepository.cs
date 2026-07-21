@@ -17,7 +17,7 @@ public interface IPagamentoRepository
 
     Task<bool> ExistePagamentoMes(int idMatricula, int mes, int ano);
 
-    Task<decimal> calcularFaturamentoMensal();
+    Task<decimal?> calcularFaturamentoMensal(int mes, int ano);
 
 
 }
@@ -67,14 +67,12 @@ public async Task<bool> ExistePagamentoMes(int idMatricula, int mes, int ano)
         p.AnoReferencia == ano);
 }
 
-public async Task<decimal> calcularFaturamentoMensal()
+public async Task<decimal?> calcularFaturamentoMensal(int mes, int ano)
     {
-        var today = DateOnly.FromDateTime(DateTime.Today);
-
         return await _context.Pagamentos
             .Where(p => p.DataPagamento.HasValue &&
-                   p.DataPagamento.Value.Month == today.Month &&
-                   p.DataPagamento.Value.Year == today.Year)
+                   p.DataPagamento.Value.Month == mes &&
+                   p.DataPagamento.Value.Year == ano)
             .SumAsync(m => m.ValorPagamento);
     }
 

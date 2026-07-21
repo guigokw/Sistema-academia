@@ -8,7 +8,7 @@ public interface IPagamentoService
 
     void cancelarPagamento(int idPagamento);
 
-    Task exibirFaturamentoMensal();
+    Task<decimal?> exibirFaturamentoMensal(int mes, int ano);
 
 
 } 
@@ -97,18 +97,16 @@ public class PagamentoService : IPagamentoService
     };
 }
 
-public async Task exibirFaturamentoMensal()
+public async Task<decimal?> exibirFaturamentoMensal(int mes, int ano)
     {
-        decimal faturamentoMensal = await _pagamentoRepository.calcularFaturamentoMensal();
+        var pagamentoMensal = await _pagamentoRepository.calcularFaturamentoMensal(mes, ano);
 
-        if (faturamentoMensal <= 0)
+        if (pagamentoMensal <= 0)
         {
-            Console.WriteLine("Nesse mês não houve faturamento");
-        } else
-        {
-            Console.WriteLine("O faturamento mensal deste mês equivale a R$:" +faturamentoMensal);
+            throw new PagamentoInvalidoException("não foi possível listar os pagamentos desse periodo pois não há nenhum pagamento registrado durante esse tempo");
         }
 
+        return pagamentoMensal;
     }
 
 

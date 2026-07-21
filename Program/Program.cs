@@ -1128,7 +1128,7 @@ namespace Sistema_academia
                     Console.WriteLine("3 - Listar pagamentos atrasados");
                     Console.WriteLine("4 - Listar pagamentos realizados");
                     Console.WriteLine("5 - Listar pagamentos pendentes");
-                    Console.WriteLine("6 - Calcular o faturamento mensal do mês atual");
+                    Console.WriteLine("6 - Calcular o faturamento mensal de um mês específico");
                     Console.WriteLine("7 - Sair do menu de pagamentos");
                     Console.WriteLine("--------------------");
 
@@ -1203,7 +1203,14 @@ namespace Sistema_academia
                             }    
                             break;
                         case 6:
-                            await pagamentoService.exibirFaturamentoMensal();
+                            Console.WriteLine("qual o mês que você deseja listar o faturamento mensal? insira entre mês 1 até o mês 12");
+                            int mes = int.Parse(Console.ReadLine() ?? "0");
+
+                            Console.WriteLine("qual o ano que você deseja listar esse faturamento mensal?"); 
+                            int ano = int.Parse(Console.ReadLine() ?? "0");
+                            
+                            Console.WriteLine("o faturamento mensal do mês " +mes+ " do ano de " +ano+ " foi de R$:" +await pagamentoService.exibirFaturamentoMensal(mes, ano));
+                            
                             break;    
                         case 7:
                             return;
