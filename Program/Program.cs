@@ -490,8 +490,18 @@ namespace Sistema_academia
                             Console.WriteLine("----------------");
                         }
                         break;
-                    case 5:
-                         Console.WriteLine("O plano mais contratado da Academia é o plano " + await planoService.listarPlanoMaisContratado());   
+                    case 5: 
+                        var planoMaisContratado = await _planoService.listarPlanoMaisContratado();
+                        
+                        if (planoMaisContratado != null)
+                        {
+                            Console.WriteLine("o plano mais contratado da academia é o plano " + planoMaisContratado.NomePlano + " do tipo " + planoMaisContratado.TipoPlano + " com o valor de " +planoMaisContratado.ValorPlano);
+                        }
+                        else
+                        {
+                            throw new PlanoNaoEncontradoException("Não foi possível listar o plano mais contratado pois não há planos contratados no sistema");
+                        }
+                        
                          break;
                     case 6:
                         return;

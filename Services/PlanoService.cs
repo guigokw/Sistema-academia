@@ -10,7 +10,7 @@ public interface IPlanoService
 
     Task<List<ExibicaoPlanosDTO>> listarPlanos();
 
-    Task<TiposDePlano> listarPlanoMaisContratado();
+    Task<Plano?> listarPlanoMaisContratado();
 }
 
 public class PlanoService : IPlanoService
@@ -82,7 +82,7 @@ public class PlanoService : IPlanoService
         return exibirDados;
     }
 
-    public async Task<TiposDePlano> listarPlanoMaisContratado()
+    public async Task<Plano?> listarPlanoMaisContratado()
     {
          return await _planoRepository.planoMaisContratado();
     }
