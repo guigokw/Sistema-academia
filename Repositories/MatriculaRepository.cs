@@ -27,6 +27,8 @@ public interface IMatriculaRepository
 
     void atualizarSituacaoTodos();
 
+    Task<int?> obterQuantidadeAlunosPorPlano(Plano plano);
+
 }
 
 public class MatriculaRepository : IMatriculaRepository
@@ -153,5 +155,12 @@ public async Task<List<Matricula>> ObterMatriculasProximasDoVencimento()
         .OrderBy(m => m.DataVencimento)
         .ToListAsync();
 }
+
+public async Task<int?> obterQuantidadeAlunosPorPlano(Plano plano)
+    {
+        return await _context.Matriculas
+            .Where(m => m.IdPlano == plano.IdPlano)
+            .CountAsync();
+    }
 
 }

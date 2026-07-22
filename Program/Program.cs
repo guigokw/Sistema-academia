@@ -77,7 +77,7 @@ namespace Sistema_academia
                         await menuCliente(_alunoService, _treinoAlunoService, _matriculaService);
                         break;
                     case 2:
-                        await menuPlano(_planoService);
+                        await menuPlano(_planoService, _matriculaService);
                         break;
                     case 3:
                         await menuMatricula(_matriculaService);
@@ -387,7 +387,7 @@ namespace Sistema_academia
             } 
         }
 
-        private static async Task menuPlano(IPlanoService planoService)
+        private static async Task menuPlano(IPlanoService planoService, IMatriculaService matriculaService)
         {
            try {
             while (true) {
@@ -397,7 +397,8 @@ namespace Sistema_academia
                 Console.WriteLine("3 - Excluir plano");
                 Console.WriteLine("4 - Consultar plano");
                 Console.WriteLine("5 - Listar plano mais contratado");
-                Console.WriteLine("6 - Sair do menu de planos");
+                Console.WriteLine("6 - Listar quantidade de alunos de um plano especifico");
+                Console.WriteLine("7 - Sair do menu de planos");
                 Console.WriteLine("---------------------------");
 
                 Console.WriteLine("escolha uma dessas opções para prosseguir");
@@ -492,18 +493,39 @@ namespace Sistema_academia
                         break;
                     case 5: 
                         var planoMaisContratado = await _planoService.listarPlanoMaisContratado();
-                        
+
                         if (planoMaisContratado != null)
                         {
-                            Console.WriteLine("o plano mais contratado da academia é o plano " + planoMaisContratado.NomePlano + " do tipo " + planoMaisContratado.TipoPlano + " com o valor de " +planoMaisContratado.ValorPlano);
+                            var quantAlunos = await matriculaService.exibirQuantidadeAlunoPorPlano(planoMaisContratado);
+                            Console.WriteLine("--- PLANO MAIS CONTRATADO ---");
+                            Console.WriteLine($"NOME DO PLANO: " +planoMaisContratado.NomePlano);
+                            Console.WriteLine($"TIPO DE PLANO: " +planoMaisContratado.TipoPlano);
+                            Console.WriteLine($"VALOR DO PLANO: " +planoMaisContratado.ValorPlano);
+                            Console.WriteLine($"QUANTIDADE DE ALUNOS:" +quantAlunos);
+                            Console.WriteLine("---------------");
                         }
                         else
                         {
                             throw new PlanoNaoEncontradoException("Não foi possível listar o plano mais contratado pois não há planos contratados no sistema");
                         }
-                        
-                         break;
+
+                        break;
                     case 6:
+                        Console.WriteLine("Qual o id do plano que você deseja verificar a quantidade de alunos existentes");
+                        int id = int.Parse(Console.ReadLine() ?? "0");   
+
+                        Plano planoQuantidade = _planoService.obterPlano(id); 
+
+                        var quantidadeAlunosPlano = await matriculaService.exibirQuantidadeAlunoPorPlano(planoQuantidade);
+
+                        Console.WriteLine("--- DADOS DO PLANO " +planoQuantidade.NomePlano+ " ---");
+                        Console.WriteLine($"NOME DO PLANO: " +planoQuantidade.NomePlano);
+                        Console.WriteLine($"TIPO DE PLANO: " +planoQuantidade.TipoPlano);
+                        Console.WriteLine($"VALOR DO PLANO: " +planoQuantidade.ValorPlano);
+                        Console.WriteLine($"QUANTIDADE DE ALUNOS:" +quantidadeAlunosPlano);
+                        Console.WriteLine("---------------");
+                        break;
+                    case 7:
                         return;
                     default:
                         Console.WriteLine("Opção inválida, por favor digite novamente");
@@ -536,7 +558,10 @@ namespace Sistema_academia
         } catch (System.OverflowException)
         {
                 Console.WriteLine("o formato inserido é inválido por se tratar de ser muito longo ou muito pequeno para esse valor");
-        }
+        } catch (AlunoNaoEncontradoException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
     private static async Task menuMatricula(IMatriculaService matriculaService)
@@ -1209,8 +1234,11 @@ namespace Sistema_academia
                             Console.WriteLine("qual o ano que você deseja listar esse faturamento mensal?"); 
                             int ano = int.Parse(Console.ReadLine() ?? "0");
                             
-                            Console.WriteLine("o faturamento mensal do mês " +mes+ " do ano de " +ano+ " foi de R$:" +await pagamentoService.exibirFaturamentoMensal(mes, ano));
-                            
+                            Console.WriteLine("--- DADOS DE FATURAMENTO ---");
+                            Console.WriteLine("MÊS DO FATURAMENTO: " +mes);
+                            Console.WriteLine("ANO DO FATURAMENTO: " +ano);
+                            Console.WriteLine("TOTAL FATURADO: R$:" + await pagamentoService.exibirFaturamentoMensal(mes, ano));
+                            Console.WriteLine("---------------------");
                             break;    
                         case 7:
                             return;

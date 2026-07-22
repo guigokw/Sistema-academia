@@ -19,6 +19,8 @@ public interface IMatriculaService
     Task<IEnumerable<exibicaoPagamentosDTO>> listarMatriculasPendentes();
 
     Task<List<exibicaoMatriculaDTO>> ObterMatriculasProximasDoVencimento();
+
+    Task<int?> exibirQuantidadeAlunoPorPlano(Plano plano);
 }
 
 public class MatriculaService : IMatriculaService
@@ -253,4 +255,17 @@ public class MatriculaService : IMatriculaService
     return exibirDados;
     
 }
+
+public async Task<int?> exibirQuantidadeAlunoPorPlano(Plano plano)
+    {
+
+        var quantidadeAlunos = await _matriculaRepository.obterQuantidadeAlunosPorPlano(plano);
+
+        if (quantidadeAlunos <= 0)
+        {
+            throw new AlunoNaoEncontradoException("Neste plano não há alunos matriculados");
+        } 
+
+        return quantidadeAlunos;
+    }
 }
